@@ -16,4 +16,4 @@ Each person to whom a holiday card should be addressed was given a google contac
 
 For example, I might have a google contact for Jane Doe and John Doe, who live at the same address. The script finds the same addresses and, if their last names are the same, changes the addressee line to Jane & John Doe (with alphabetical ordering), and removes one of the two address rows. If Jane kept her maiden name, Buck, then the addressee name is changed to Jane Buck & John Doe. 
 
-The input is a google contact exported csv __in Outlook format__, and the output is a csv with the names changed as above and redundant rows removed in the format needed for uploading. Right now the script accepts tinyprints and Shutterfly formats. 
+The input is a google contact exported csv __in Outlook format__, and the output is a csv with the names changed as above and redundant rows removed in the format needed for uploading. Right now the script works for Shutterfly. 
