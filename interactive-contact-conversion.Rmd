@@ -1,0 +1,83 @@
+---
+title: "interactive-contact-conversion"
+author: "Dan Spakowicz"
+date: "12/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+## Read in data
+
+Newest google download seems to have broken the previous scripts. That's not terribly surprising, I suppose.
+
+```{r cars}
+x <- read_csv("~/Downloads/contacts (3).csv")
+
+head(x)
+```
+
+Select columns of interest.
+
+```{r}
+df <- 
+  x %>%
+  select(`First Name`, `Middle Name`, `Last Name`, `Home Street`, 
+          `Home City`, `Home State`, `Home Postal Code`) %>%
+  drop_na(`Home City`)
+
+head(df)
+```
+
+```{r}
+# Create a new field for matching addresses (too many different Rd vs Rd. vs Road etc)
+num.st <- strsplit(df$`Home Street`, split = " ")
+df$num.st <- lapply(num.st, function(x) paste(x[1], x[2], sep = " ")) %>%
+  unlist
+
+# Split out the duplicates
+dups <- duplicated(df$num.st)
+dupsdf <- df[dups,]
+out <- df[!dups,]
+
+# For each duplicated contact
+for (i in 1:nrow(dupsdf)) {
+  
+  # Find the matched contact in out
+  check <- grep(dupsdf$num.st[i], out$num.st)
+  
+  # Are the last names the same?
+  all.last.names <- unique(c(out$`Last Name`[check], dupsdf$`Last Name`[i]))
+  if (length(all.last.names) == 1) {
+    # Change the name to of the last of the duplicates to $FIRSTNAME1 & 
+    # FIRSTNAME2 $LASTNAME
+    firstnames <- c(out$`First Name`[check], dupsdf$`First Name`[i])
+    out$`First Name`[check] <- paste(firstnames, collapse = " & ")
+    out$`Last Name`[check] <- all.last.names
+    
+  } else {
+    # If multiple last names, hyphenate
+    out$`First Name`[check] <- paste(out$`First Name`[check], out$`Last Name`[check], 
+                                   sep = " ")
+    out$`Last Name`[check] <- paste("&", dupsdf$`First Name`[i], dupsdf$`Last Name`[i],
+                                  sep = " ")
+  }
+} 
+
+# Remove the num.st col used for matching
+out$num.st <- NULL
+
+```
+
+```{r}
+# Write output for uploading to website
+date <- Sys.Date() %>%
+  as.Date(format = "%F")
+write.csv(out, file = paste0(date, "_holiday_simplytoimpress.csv", sep = ""),
+            row.names = FALSE, na = "")
+```
+

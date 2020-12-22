@@ -1,3 +1,4 @@
 *.csv
 *.vcf
 .Rhistory
+.Rproj.user
