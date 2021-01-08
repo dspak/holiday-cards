@@ -16,7 +16,7 @@ library(tidyverse)
 Newest google download seems to have broken the previous scripts. That's not terribly surprising, I suppose.
 
 ```{r cars}
-x <- read_csv("~/Downloads/contacts (3).csv")
+x <- read_csv("~/Downloads/contacts (8).csv")
 
 head(x)
 ```
@@ -24,9 +24,15 @@ head(x)
 Select columns of interest.
 
 ```{r}
+# df <- 
+#   x %>%
+#   select(`First Name`, `Middle Name`, `Last Name`, `Home Street`, 
+#           `Home City`, `Home State`, `Home Postal Code`) %>%
+#   drop_na(`Home City`)
+
 df <- 
   x %>%
-  select(`First Name`, `Middle Name`, `Last Name`, `Home Street`, 
+  select(`First Name`, `Last Name`, `Home Street`,
           `Home City`, `Home State`, `Home Postal Code`) %>%
   drop_na(`Home City`)
 
@@ -78,6 +84,30 @@ out$num.st <- NULL
 date <- Sys.Date() %>%
   as.Date(format = "%F")
 write.csv(out, file = paste0(date, "_holiday_simplytoimpress.csv", sep = ""),
+            row.names = FALSE, na = "")
+```
+
+Tweaks for Shutterfly
+
+```{r}
+noHome <- function(x) gsub("Home (.*)", "\\1", x)
+
+shut <- 
+  out %>%
+  mutate("Display/Household Name (Smith Family)" = "",
+         "Address Line 2" = "",
+         "Country" = "", 
+         "Email" = "") %>%
+  rename_at(c("Home City", "Home State", "Home Postal Code"),
+            noHome) %>%
+  rename("Address Line 1" = "Home Street") %>%
+  select("First Name", "Last Name", "Display/Household Name (Smith Family)", "Address Line 1", "Address Line 2", "City", "State", "Postal Code", "Country", "Email")
+
+head(shut)
+```
+
+```{r}
+write.csv(shut, file = paste0(date, "_holiday_shutterfly.csv", sep = ""),
             row.names = FALSE, na = "")
 ```
 
