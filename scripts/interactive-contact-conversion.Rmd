@@ -16,7 +16,7 @@ library(tidyverse)
 Newest google download seems to have broken the previous scripts. That's not terribly surprising, I suppose.
 
 ```{r cars}
-x <- read_csv("~/Downloads/contacts (8).csv")
+x <- read_csv("../data/contacts.csv")
 
 head(x)
 ```
