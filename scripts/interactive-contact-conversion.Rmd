@@ -13,13 +13,21 @@ library(tidyverse)
 
 ## Read in data
 
-Newest google download seems to have broken the previous scripts. That's not terribly surprising, I suppose.
+Data must be exported in OUTLOOK format
 
-```{r cars}
-x <- read_csv("../data/contacts.csv")
+```{r read in google contacts export, message=FALSE}
+x <- read_csv("../data/2022-12-15_contacts_outlook.csv")
 
 head(x)
+
 ```
+
+```{r}
+x %>%
+  filter(is.na(`Home Address`))
+```
+
+
 
 Select columns of interest.
 
@@ -83,7 +91,7 @@ out$num.st <- NULL
 # Write output for uploading to website
 date <- Sys.Date() %>%
   as.Date(format = "%F")
-write.csv(out, file = paste0(date, "_holiday_simplytoimpress.csv", sep = ""),
+write.csv(out, file = paste0("../data/", date, "_holiday_simplytoimpress.csv", sep = ""),
             row.names = FALSE, na = "")
 ```
 
