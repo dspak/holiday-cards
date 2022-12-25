@@ -256,7 +256,6 @@ if (window.hljs) {
 
 
 
-
 <style type="text/css">
 .main-container {
 max-width: 940px;
@@ -277,9 +276,6 @@ outline: none;
 }
 summary {
 display: list-item;
-}
-details > summary > p:only-child {
-display: inline;
 }
 pre code {
 padding: 0;
@@ -366,35 +362,35 @@ display: none;
 <div id="read-in-data" class="section level2">
 <h2>Read in data</h2>
 <p>Data must be exported in OUTLOOK format</p>
-<pre class="r"><code>x &lt;- read_csv(&quot;../data/2022-12-15_contacts_outlook.csv&quot;)</code></pre>
+<pre class="r"><code>x &lt;- read_csv(&quot;../data/2022-12-24_contacts_outlook.csv&quot;)</code></pre>
 <pre><code>## Warning: One or more parsing issues, see `problems()` for details</code></pre>
 <pre class="r"><code>head(x)</code></pre>
-<pre><code>## # A tibble: 6 × 88
-##   First Na…¹ Middl…² Last …³ Title Suffix Initi…⁴ Web P…⁵ Gender Birth…⁶ Anniv…⁷
-##   &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;   &lt;lgl&gt; &lt;chr&gt;  &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;  &lt;chr&gt;   &lt;chr&gt;  
-## 1 Adam       John    Trexler NA    &lt;NA&gt;   NA      NA      NA     &lt;NA&gt;    &lt;NA&gt;   
-## 2 Al         &lt;NA&gt;    Amore   NA    &lt;NA&gt;   NA      NA      NA     &lt;NA&gt;    &lt;NA&gt;   
-## 3 Alan       &lt;NA&gt;    Kohfel… NA    &lt;NA&gt;   NA      NA      NA     12/17/… &lt;NA&gt;   
-## 4 Alex       &lt;NA&gt;    Kwan    NA    &lt;NA&gt;   NA      NA      NA     &lt;NA&gt;    &lt;NA&gt;   
-## 5 Alex       &lt;NA&gt;    Lown    NA    &lt;NA&gt;   NA      NA      NA     &lt;NA&gt;    &lt;NA&gt;   
-## 6 Alexa      &lt;NA&gt;    Meara   NA    &lt;NA&gt;   NA      NA      NA     &lt;NA&gt;    &lt;NA&gt;   
-## # … with 78 more variables: Location &lt;lgl&gt;, Language &lt;lgl&gt;,
-## #   `Internet Free Busy` &lt;lgl&gt;, Notes &lt;chr&gt;, `E-mail Address` &lt;chr&gt;,
-## #   `E-mail 2 Address` &lt;chr&gt;, `E-mail 3 Address` &lt;chr&gt;, `Primary Phone` &lt;chr&gt;,
-## #   `Home Phone` &lt;chr&gt;, `Home Phone 2` &lt;chr&gt;, `Mobile Phone` &lt;chr&gt;,
-## #   Pager &lt;lgl&gt;, `Home Fax` &lt;lgl&gt;, `Home Address` &lt;chr&gt;, `Home Street` &lt;chr&gt;,
-## #   `Home Street 2` &lt;lgl&gt;, `Home Street 3` &lt;lgl&gt;, `Home Address PO Box` &lt;lgl&gt;,
-## #   `Home City` &lt;chr&gt;, `Home State` &lt;chr&gt;, `Home Postal Code` &lt;chr&gt;, …</code></pre>
+<pre><code>## # A tibble: 6 x 88
+##   `First Name` `Middle Name` `Last Name` Title Suffix Initials `Web Page` Gender
+##   &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;       &lt;lgl&gt; &lt;chr&gt;  &lt;lgl&gt;    &lt;lgl&gt;      &lt;lgl&gt; 
+## 1 Adam         John          Trexler     NA    &lt;NA&gt;   NA       NA         NA    
+## 2 Al           &lt;NA&gt;          Amore       NA    &lt;NA&gt;   NA       NA         NA    
+## 3 Alan         &lt;NA&gt;          Kohfeldt    NA    &lt;NA&gt;   NA       NA         NA    
+## 4 Alex         &lt;NA&gt;          Kwan        NA    &lt;NA&gt;   NA       NA         NA    
+## 5 Alex         &lt;NA&gt;          Lown        NA    &lt;NA&gt;   NA       NA         NA    
+## 6 Alexa        &lt;NA&gt;          Meara       NA    &lt;NA&gt;   NA       NA         NA    
+## # ... with 80 more variables: Birthday &lt;chr&gt;, Anniversary &lt;chr&gt;,
+## #   Location &lt;lgl&gt;, Language &lt;lgl&gt;, Internet Free Busy &lt;lgl&gt;, Notes &lt;chr&gt;,
+## #   E-mail Address &lt;chr&gt;, E-mail 2 Address &lt;chr&gt;, E-mail 3 Address &lt;chr&gt;,
+## #   Primary Phone &lt;chr&gt;, Home Phone &lt;chr&gt;, Home Phone 2 &lt;chr&gt;,
+## #   Mobile Phone &lt;chr&gt;, Pager &lt;lgl&gt;, Home Fax &lt;lgl&gt;, Home Address &lt;chr&gt;,
+## #   Home Street &lt;chr&gt;, Home Street 2 &lt;lgl&gt;, Home Street 3 &lt;lgl&gt;,
+## #   Home Address PO Box &lt;lgl&gt;, Home City &lt;chr&gt;, Home State &lt;chr&gt;, ...</code></pre>
 <pre class="r"><code>x %&gt;%
   filter(is.na(`Home Address`))</code></pre>
-<pre><code>## # A tibble: 0 × 88
-## # … with 88 variables: First Name &lt;chr&gt;, Middle Name &lt;chr&gt;, Last Name &lt;chr&gt;,
+<pre><code>## # A tibble: 0 x 88
+## # ... with 88 variables: First Name &lt;chr&gt;, Middle Name &lt;chr&gt;, Last Name &lt;chr&gt;,
 ## #   Title &lt;lgl&gt;, Suffix &lt;chr&gt;, Initials &lt;lgl&gt;, Web Page &lt;lgl&gt;, Gender &lt;lgl&gt;,
 ## #   Birthday &lt;chr&gt;, Anniversary &lt;chr&gt;, Location &lt;lgl&gt;, Language &lt;lgl&gt;,
 ## #   Internet Free Busy &lt;lgl&gt;, Notes &lt;chr&gt;, E-mail Address &lt;chr&gt;,
 ## #   E-mail 2 Address &lt;chr&gt;, E-mail 3 Address &lt;chr&gt;, Primary Phone &lt;chr&gt;,
 ## #   Home Phone &lt;chr&gt;, Home Phone 2 &lt;chr&gt;, Mobile Phone &lt;chr&gt;, Pager &lt;lgl&gt;,
-## #   Home Fax &lt;lgl&gt;, Home Address &lt;chr&gt;, Home Street &lt;chr&gt;, …</code></pre>
+## #   Home Fax &lt;lgl&gt;, Home Address &lt;chr&gt;, Home Street &lt;chr&gt;, ...</code></pre>
 <p>Select columns of interest.</p>
 <pre class="r"><code># df &lt;- 
 #   x %&gt;%
@@ -409,16 +405,16 @@ df &lt;-
   drop_na(`Home City`)
 
 head(df)</code></pre>
-<pre><code>## # A tibble: 6 × 6
-##   `First Name` `Last Name` `Home Street`       `Home City`   Home Stat…¹ Home …²
-##   &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;               &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;  
-## 1 Adam         Trexler     1805 Tilton Dr      Silver Spring MD          20902-…
-## 2 Al           Amore       50 Cook Rd          Cumberland    RI          02864  
-## 3 Alan         Kohfeldt    1018 Hawk Street    Oshkosh       WI          54902  
-## 4 Alex         Kwan        32 Robin Rd         Woodbridge    CT          06525  
-## 5 Alex         Lown        15291 Angelique Ave Allen Park    MI          48101  
-## 6 Alexa        Meara       2357 Bexley Park Rd Columbus      OH          43209-…
-## # … with abbreviated variable names ¹​`Home State`, ²​`Home Postal Code`</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   `First Name` `Last Name` `Home Street`       `Home City`   `Home State`
+##   &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;               &lt;chr&gt;         &lt;chr&gt;       
+## 1 Adam         Trexler     1805 Tilton Dr      Silver Spring MD          
+## 2 Al           Amore       50 Cook Rd          Cumberland    RI          
+## 3 Alan         Kohfeldt    1018 Hawk Street    Oshkosh       WI          
+## 4 Alex         Kwan        32 Robin Rd         Woodbridge    CT          
+## 5 Alex         Lown        15291 Angelique Ave Allen Park    MI          
+## 6 Alexa        Meara       2357 Bexley Park Rd Columbus      OH          
+## # ... with 1 more variable: Home Postal Code &lt;chr&gt;</code></pre>
 <pre class="r"><code># Create a new field for matching addresses (too many different Rd vs Rd. vs Road etc)
 num.st &lt;- strsplit(df$`Home Street`, split = &quot; &quot;)
 df$num.st &lt;- lapply(num.st, function(x) paste(x[1], x[2], sep = &quot; &quot;)) %&gt;%
@@ -475,18 +471,17 @@ shut &lt;-
   select(&quot;First Name&quot;, &quot;Last Name&quot;, &quot;Display/Household Name (Smith Family)&quot;, &quot;Address Line 1&quot;, &quot;Address Line 2&quot;, &quot;City&quot;, &quot;State&quot;, &quot;Postal Code&quot;, &quot;Country&quot;, &quot;Email&quot;)
 
 head(shut)</code></pre>
-<pre><code>## # A tibble: 6 × 10
-##   `First Name` Last …¹ Displ…² Addre…³ Addre…⁴ City  State Posta…⁵ Country Email
-##   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;
-## 1 Adam Trexler &amp; Rach… &quot;&quot;      1805 T… &quot;&quot;      Silv… MD    20902-… &quot;&quot;      &quot;&quot;   
-## 2 Al &amp; Ellen   Amore   &quot;&quot;      50 Coo… &quot;&quot;      Cumb… RI    02864   &quot;&quot;      &quot;&quot;   
-## 3 Alan &amp; Kay   Kohfel… &quot;&quot;      1018 H… &quot;&quot;      Oshk… WI    54902   &quot;&quot;      &quot;&quot;   
-## 4 Alex Kwan    &amp; Judy… &quot;&quot;      32 Rob… &quot;&quot;      Wood… CT    06525   &quot;&quot;      &quot;&quot;   
-## 5 Alex &amp; Annie Lown    &quot;&quot;      15291 … &quot;&quot;      Alle… MI    48101   &quot;&quot;      &quot;&quot;   
-## 6 Alexa &amp; Jam… Meara   &quot;&quot;      2357 B… &quot;&quot;      Colu… OH    43209-… &quot;&quot;      &quot;&quot;   
-## # … with abbreviated variable names ¹​`Last Name`,
-## #   ²​`Display/Household Name (Smith Family)`, ³​`Address Line 1`,
-## #   ⁴​`Address Line 2`, ⁵​`Postal Code`</code></pre>
+<pre><code>## # A tibble: 6 x 10
+##   `First Name`  `Last Name`  `Display/Househo~ `Address Line 1` `Address Line 2`
+##   &lt;chr&gt;         &lt;chr&gt;        &lt;chr&gt;             &lt;chr&gt;            &lt;chr&gt;           
+## 1 Adam Trexler  &amp; Rachel Hu~ &quot;&quot;                1805 Tilton Dr   &quot;&quot;              
+## 2 Al &amp; Ellen    Amore        &quot;&quot;                50 Cook Rd       &quot;&quot;              
+## 3 Alan &amp; Kay    Kohfeldt     &quot;&quot;                1018 Hawk Street &quot;&quot;              
+## 4 Alex Kwan     &amp; Judy Cha   &quot;&quot;                32 Robin Rd      &quot;&quot;              
+## 5 Alex &amp; Annie  Lown         &quot;&quot;                15291 Angelique~ &quot;&quot;              
+## 6 Alexa &amp; James Meara        &quot;&quot;                2357 Bexley Par~ &quot;&quot;              
+## # ... with 5 more variables: City &lt;chr&gt;, State &lt;chr&gt;, Postal Code &lt;chr&gt;,
+## #   Country &lt;chr&gt;, Email &lt;chr&gt;</code></pre>
 <pre class="r"><code>write.csv(shut, file = paste0(date, &quot;_holiday_shutterfly.csv&quot;, sep = &quot;&quot;),
             row.names = FALSE, na = &quot;&quot;)</code></pre>
 </div>
