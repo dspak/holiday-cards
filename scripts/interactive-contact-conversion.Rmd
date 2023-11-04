@@ -16,7 +16,7 @@ library(tidyverse)
 Data must be exported in OUTLOOK format
 
 ```{r read in google contacts export, message=FALSE}
-x <- read_csv("../data/2022-12-24_contacts_outlook.csv")
+x <- read_csv("../data/2023-11-04_contacts_outlook.csv")
 
 head(x)
 
