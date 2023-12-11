@@ -16,7 +16,7 @@ library(tidyverse)
 Data must be exported in OUTLOOK format
 
 ```{r read in google contacts export, message=FALSE}
-x <- read_csv("../data/2023-11-04_contacts_outlook.csv")
+x <- read_csv("../data/2023-12-10_contacts.csv")
 
 head(x)
 
@@ -117,5 +117,34 @@ head(shut)
 ```{r}
 write.csv(shut, file = paste0(date, "_holiday_shutterfly.csv", sep = ""),
             row.names = FALSE, na = "")
+```
+
+# Tweaks for Paper Culture
+
+```{r}
+pc <-  
+  out %>%
+    mutate("Recipient Name (enter 1 per line)" = paste(`First Name`, `Last Name`, sep = " "),
+           USAddress1 = `Home Street`,	
+           USAddress2 = NA,
+           USCity = `Home City`,
+           USState	= state.name[match(`Home State`, state.abb)],
+           USZipCode = `Home Postal Code`) %>%
+  select(`Recipient Name (enter 1 per line)`, 
+         USAddress1, 
+         USAddress2, 
+         USCity, 
+         USState, 
+         USZipCode)
+  
+write.csv(pc, file = paste0("../data/", date, "_holiday_paperculture.csv", sep = ""),
+            row.names = FALSE, na = "")
+```
+
+state.name
+```{r}
+state.name
+state.abb
+match(out$`Home State`, state.)
 ```
 
