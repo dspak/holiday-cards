@@ -1,6 +1,11 @@
-# output csvs
+# Contact exports and holiday-card address lists (PII)
+data/g-contacts_exports/
+data/script-outputs/
 *.csv
 *.vcf
+*.xls
+*.xlsx
+
 .Rhistory
 .Rproj.user
 .DS_Store
