@@ -6,148 +6,157 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-# Set knitr options to display code chunks
 knitr::opts_chunk$set(echo = TRUE)
 
-# Load required packages
 library(tidyverse)
 ```
 
 ## Read in data
 
-Data must be exported in OUTLOOK format
+Export contacts as **CSV** (Google Contacts or compatible; column names must match what this script expects).
 
-This script reads a CSV file containing exported Google Contacts data.
-The file path provided points to a specific export dated "2024-12-14".
-Ensure the file exists at the specified relative path before running the script.
+This script reads a CSV from `../data/g-contacts_exports/`. Update the path below when you use a new export.
 
-```{r read in google contacts export, message=FALSE}
-# Read the Google Contacts export CSV file
-# Note: Update the file path/date as needed for your export
-x <- read_csv("../data/g-contacts_exports/2025-11-11_contacts.csv")
+```{r read-google-contacts, message=FALSE}
+contacts_path <- "../data/g-contacts_exports/2025-11-11_contacts.csv"
 
-# Preview the data structure
-head(x)
+contacts_raw <- read_csv(contacts_path)
+
+head(contacts_raw)
 ```
 
 ## Select and clean columns
 
-```{r}
-# Select only the columns needed for holiday card addressing
-# Remove any contacts that don't have a city (i.e., incomplete addresses)
-df <- x %>%
-  select(`First Name`, `Last Name`, `Home Street`,
-         `Home City`, `Home State`, `Home Postal Code`) %>%
+```{r select-columns}
+contacts <- contacts_raw %>%
+  select(
+    `First Name`,
+    `Last Name`,
+    `Home Street`,
+    `Home City`,
+    `Home State`,
+    `Home Postal Code`
+  ) %>%
   drop_na(`Home City`)
 
-# Preview the cleaned data
-head(df)
+head(contacts)
 ```
 
 ## Merge duplicate addresses
 
-```{r}
-# Merge contacts that share the same address
-# Strategy: Extract first two words of street address (number + street name)
-# to match addresses that might differ only in abbreviations (Rd vs Road, etc.)
+Contacts at the same address are merged into one row. Matching uses the first two words of `Home Street` (e.g. house number + street name) so small wording differences (Rd vs Road) still group together.
 
-df <- df %>%
-  # Create a simplified address identifier (e.g., "123 Main")
-  mutate(num.st = word(`Home Street`, 1, 2)) %>%
-  # Group by this simplified address
-  group_by(num.st) %>%
+```{r merge-duplicates}
+contacts <- contacts %>%
+  mutate(street_key = word(`Home Street`, 1, 2)) %>%
+  group_by(street_key) %>%
   summarise(
-    # If multiple people at same address, combine first names with " & "
-    `First Name` = if_else(n() > 1, paste(`First Name`, collapse = " & "), first(`First Name`)),
-    # If different last names at same address, combine them with " & "
-    `Last Name` = if_else(n_distinct(`Last Name`) > 1, 
-                          paste(unique(`Last Name`), collapse = " & "), 
-                          first(`Last Name`)),
-    # Use the first occurrence of address fields (they should be identical)
+    `First Name` = if_else(
+      n() > 1,
+      paste(`First Name`, collapse = " & "),
+      first(`First Name`)
+    ),
+    `Last Name` = if_else(
+      n_distinct(`Last Name`) > 1,
+      paste(unique(`Last Name`), collapse = " & "),
+      first(`Last Name`)
+    ),
     `Home Street` = first(`Home Street`),
     `Home City` = first(`Home City`),
     `Home State` = first(`Home State`),
     `Home Postal Code` = first(`Home Postal Code`),
     .groups = "drop"
   ) %>%
-  # Remove the temporary grouping variable
-  select(-num.st)
+  select(-street_key)
 ```
 
-## Export for SimplyToImpress
+## Export outputs
 
-```{r}
-# Generate date stamp for output filename
-date <- Sys.Date()
+All exports go to `../data/script-outputs/` with a run date in the filename.
 
-# Export cleaned data in SimplyToImpress format
-# This format uses the original column names from Google Contacts
-write.csv(df, 
-          file = paste0("../data/script-outputs/", date, "_holiday_simplytoimpress.csv"),
-          row.names = FALSE,  # Don't include row numbers
-          na = "")            # Write empty string instead of NA
+```{r export-date}
+export_date <- Sys.Date()
 ```
 
-## Export for Shutterfly
+### SimplyToImpress
 
-```{r}
-# Helper function to remove "Home " prefix from column names
-# Shutterfly expects "City" not "Home City", etc.
+Column names stay aligned with the Google export.
+
+```{r export-simplytoimpress}
+write.csv(
+  contacts,
+  file = paste0("../data/script-outputs/", export_date, "_holiday_simplytoimpress.csv"),
+  row.names = FALSE,
+  na = ""
+)
+```
+
+### Shutterfly
+
+Shutterfly expects different column names (no `Home ` prefix on address fields, plus extra empty columns).
+
+```{r export-shutterfly}
 remove_home_prefix <- function(x) gsub("Home (.*)", "\\1", x)
 
-# Transform data to match Shutterfly's required format
-shut <- df %>%
-  # Add empty columns required by Shutterfly
-  mutate("Display/Household Name (Smith Family)" = "",
-         "Address Line 2" = "",
-         "Country" = "", 
-         "Email" = "") %>%
-  # Remove "Home " prefix from city, state, and postal code columns
+shutterfly <- contacts %>%
+  mutate(
+    `Display/Household Name (Smith Family)` = "",
+    `Address Line 2` = "",
+    `Country` = "",
+    `Email` = ""
+  ) %>%
   rename_with(remove_home_prefix, c("Home City", "Home State", "Home Postal Code")) %>%
-  # Rename street address to match Shutterfly format
-  rename("Address Line 1" = "Home Street") %>%
-  # Select columns in the exact order Shutterfly expects
-  select("First Name", "Last Name", "Display/Household Name (Smith Family)", 
-         "Address Line 1", "Address Line 2", "City", "State", "Postal Code", 
-         "Country", "Email")
+  rename(`Address Line 1` = `Home Street`) %>%
+  select(
+    `First Name`,
+    `Last Name`,
+    `Display/Household Name (Smith Family)`,
+    `Address Line 1`,
+    `Address Line 2`,
+    `City`,
+    `State`,
+    `Postal Code`,
+    `Country`,
+    `Email`
+  )
 
-# Preview the transformed data
-head(shut)
+head(shutterfly)
 
-# Export to CSV file
-write.csv(shut, 
-          file = paste0("../data/script-outputs/", date, "_holiday_shutterfly.csv"),
-          row.names = FALSE, 
-          na = "")
+write.csv(
+  shutterfly,
+  file = paste0("../data/script-outputs/", export_date, "_holiday_shutterfly.csv"),
+  row.names = FALSE,
+  na = ""
+)
 ```
 
-## Export for Paper Culture
+### Paper Culture
 
-```{r}
-# Transform data to match Paper Culture's required format
-pc <- df %>%
+Full state names are required; `state.name` / `state.abb` map two-letter codes.
+
+```{r export-paperculture}
+paper_culture <- contacts %>%
   mutate(
-    # Combine first and last name into a single recipient name field
-    "Recipient Name (enter 1 per line)" = paste(`First Name`, `Last Name`),
-    # Map address fields to Paper Culture's naming convention
+    `Recipient Name (enter 1 per line)` = paste(`First Name`, `Last Name`),
     USAddress1 = `Home Street`,
-    USAddress2 = NA,  # No second address line in our data
+    USAddress2 = NA,
     USCity = `Home City`,
-    # Convert state abbreviations (e.g., "CA") to full state names (e.g., "California")
     USState = state.name[match(`Home State`, state.abb)],
     USZipCode = `Home Postal Code`
   ) %>%
-  # Select only the columns Paper Culture requires, in order
-  select(`Recipient Name (enter 1 per line)`, 
-         USAddress1, 
-         USAddress2, 
-         USCity, 
-         USState, 
-         USZipCode)
+  select(
+    `Recipient Name (enter 1 per line)`,
+    USAddress1,
+    USAddress2,
+    USCity,
+    USState,
+    USZipCode
+  )
 
-# Export to CSV file
-write.csv(pc, 
-          file = paste0("../data/script-outputs/", date, "_holiday_paperculture.csv"),
-          row.names = FALSE, 
-          na = "")
+write.csv(
+  paper_culture,
+  file = paste0("../data/script-outputs/", export_date, "_holiday_paperculture.csv"),
+  row.names = FALSE,
+  na = ""
+)
 ```
